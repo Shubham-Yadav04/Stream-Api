@@ -114,9 +114,7 @@ Main main= new Main();
 
 //        Used when each element produces multiple elements.
         // flattens the inner nested loop and access the element and perform operation on that
-
-
-                List<List<Integer>> flatList = List.of(
+        List<List<Integer>> flatList = List.of(
                 List.of(1,2),
                 List.of(3,4)
         );
@@ -124,6 +122,45 @@ Main main= new Main();
         flatList.stream()
                 .flatMap(List::stream)
                 .forEach(System.out::println);
+
+
+//        Q1 : find duplicate elements in a list using streams
+        List<Integer> question= List.of(1,2,1,2,1,3,4,5);
+        // to find the duplicate element
+
+        Set<Integer> duplicates= question.stream()
+                .collect(Collectors.groupingBy(i->i, Collectors.counting()))
+                .entrySet().stream().filter(entry->entry.getValue()>1).map(Map.Entry::getKey).collect(Collectors.toSet());
+        System.out.println(duplicates.toString()); // output : [1, 2]
+
+
+
+        //Q2 : Find first non-repeating character in a String
+        String Q2= "swiss";
+        Optional<Map.Entry<Character,Long>> ch= Q2.chars().mapToObj(c->(char)c).collect(Collectors.groupingBy(i->i,LinkedHashMap:: new,Collectors.counting())).entrySet().stream()
+                .filter(entry->entry.getValue()==1).findFirst();
+        ch.ifPresent(entry->System.out.println(entry.getKey()));  // output : w
+
+        // Q3  :Sort employees by salary (ascending & descending)
+        List<Employee> employees = Arrays.asList(
+                new Employee(101, "Amit", 75000, "IT"),
+                new Employee(102, "Priya", 82000, "HR"),
+                new Employee(103, "Rahul", 68000, "Finance"),
+                new Employee(104, "Sneha", 82000, "IT"),     // duplicate salary
+                new Employee(105, "Vikram", 95000, "Management"),
+                new Employee(106, "Neha", 72000, "HR"),
+                new Employee(107, "Arjun", 68000, "IT"),     // duplicate salary
+                new Employee(108, "Kavya", 88000, "Finance")
+        );
+        List<Employee> sortedEmp= employees.stream().sorted(Comparator.comparingDouble(Employee::getSalary)).toList();
+        System.out.println(sortedEmp.toString()); // output : [103 | Rahul | 68000.0 | Finance, 107 | Arjun | 68000.0 | IT, 106 | Neha | 72000.0 | HR, 101 | Amit | 75000.0 | IT, 102 | Priya | 82000.0 | HR, 104 | Sneha | 82000.0 | IT, 108 | Kavya | 88000.0 | Finance, 105 | Vikram | 95000.0 | Management]
+
+        // Q4 :  Group employees by department
+        Map<String,List<Employee>> departmentEmp= employees.stream().collect(Collectors.groupingBy(Employee::getDepartment));
+        System.out.println(departmentEmp.toString());
+        // output :  {Finance=[103 | Rahul | 68000.0 | Finance, 108 | Kavya | 88000.0 | Finance], HR=[102 | Priya | 82000.0 | HR, 106 | Neha | 72000.0 | HR], Management=[105 | Vikram | 95000.0 | Management], IT=[101 | Amit | 75000.0 | IT, 104 | Sneha | 82000.0 | IT, 107 | Arjun | 68000.0 | IT]}
+
+
     }
 }
 
@@ -150,5 +187,29 @@ class Product{
 
     public void setPrice(int price) {
         this.price = price;
+    }
+}
+
+class Employee {
+    private int id;
+    private String name;
+    private double salary;
+    private String department;
+
+    public Employee(int id, String name, double salary, String department) {
+        this.id = id;
+        this.name = name;
+        this.salary = salary;
+        this.department = department;
+    }
+
+    public int getId() { return id; }
+    public String getName() { return name; }
+    public double getSalary() { return salary; }
+    public String getDepartment() { return department; }
+
+    @Override
+    public String toString() {
+        return id + " | " + name + " | " + salary + " | " + department;
     }
 }
