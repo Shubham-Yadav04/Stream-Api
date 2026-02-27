@@ -160,6 +160,18 @@ Main main= new Main();
         System.out.println(departmentEmp.toString());
         // output :  {Finance=[103 | Rahul | 68000.0 | Finance, 108 | Kavya | 88000.0 | Finance], HR=[102 | Priya | 82000.0 | HR, 106 | Neha | 72000.0 | HR], Management=[105 | Vikram | 95000.0 | Management], IT=[101 | Amit | 75000.0 | IT, 104 | Sneha | 82000.0 | IT, 107 | Arjun | 68000.0 | IT]}
 
+// Q5:   Find second Highest number in a list using the list provided in Q1
+        Integer secondHighest= (Integer)question.stream().distinct().sorted().toArray()[1];
+        System.out.println(secondHighest); // output : 2
+
+
+        // Q6 : Partition numbers into even and odd
+        Map<Boolean,List<Integer>> mapForEven_Odd=question.stream().distinct().collect(Collectors.partitioningBy(e->e%2==0));
+        System.out.println(mapForEven_Odd.toString());
+
+        //Q6 : Find longest string in a list --> approach sort the string based on the length and return the findFirst
+
+
 
     }
 }
